@@ -1,0 +1,87 @@
+@startuml Prototype Pattern
+
+skin rose
+'--- Declaration---
+title Scenario 4: Factory Method
+'skinparam classAttributeIconSize 0
+
+class Client {
+}
+
+class RoundTripRideFactory {
+    - departureRide: IRide
+    - returnRide: IRide
+    {field}...
+    + setRoundTripRides(departInfo: RideIndo, returnInfo: RideInfo): void
+    + createRide(info: RideIndo): IRide
+}
+
+class IndividualRideFactory {
+    {field}...
+    + createRide(info: RideIndo): IRide
+}
+
+class ShareableRideFactory {
+    {field}...
+    + createRide(info: RideIndo): IRide
+}
+
+interface IRide {
+    + setRide(info: RideIndo): void
+    {method}...
+}
+
+class IndividualRide {
+    - src: Location
+    - dst: Location
+    - departureTime: Time
+    - priceRate: double
+    - numberOfLuggage: int
+    {field}...
+    + setRide(info: RideIndo): void
+    {method}...
+}
+
+class ShareableRide {
+    - src: Location
+    - dst: Location
+    - departureTime: Time
+    - priceRate: double
+    - numberOfPassengers: int
+    - numberOfLuggage: int
+    {field}...
+    + setRide(info: RideIndo): void
+    {method}...
+}
+
+' --- Note ---
+
+note top of ShareableRide
+    Concrete ShareableRide is the implementation for Shareable ride via Ride interface.
+end note
+
+note top of RoundTripRideFactory
+    The RoundTripRideFactory class declares the factory method
+    that returns new Ride instances. 
+    The return type of this method matches the IRide interface.
+end note
+
+
+note right of IndividualRideFactory::createRide
+    return new IndividualRide()
+end note
+
+note right of ShareableRideFactory::createRide
+    return new ShareableRide()
+end note
+
+' ---Relationship ---
+
+Client -right-> RoundTripRideFactory
+IndividualRide ..up..|> IRide
+ShareableRide ..up..|> IRide
+RoundTripRideFactory o-right-> IRide
+IndividualRideFactory -up-|> RoundTripRideFactory
+ShareableRideFactory -up-|> RoundTripRideFactory
+
+@enduml

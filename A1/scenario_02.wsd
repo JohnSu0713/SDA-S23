@@ -1,0 +1,103 @@
+@startuml Prototype Pattern
+
+skin rose
+'--- Declaration---
+title Scenario 2: Prototype
+'skinparam classAttributeIconSize 0
+
+class Client {
+}
+
+class MemoryFacility {
+    - historyRides[]: IRidePrototype
+    {field} ...
+    + addRide(id:String, r:IRidePrototype)
+    + getLastRide(): IRidePrototype
+    {method} ...
+}
+
+interface IRidePrototype {
+    +clone(): IRidePrototype
+}
+
+class Economy {
+    - configs[]: Configurations
+    - priceRate: Double
+    - src: Location
+    - dst: Location
+    {field} ...
+    +Economy(src: Location, dst: Location)
+    +clone(): IRidePrototype
+    {method} ...
+}
+
+class Business {
+    - configs[]: Configurations
+    - priceRate: Double
+    - src: Location
+    - dst: Location
+    {field} ...
+    +Business(src: Location, dst: Location)
+    +clone(): IRidePrototype
+    {method} ...
+}
+
+class Minibus {
+    - configs[]: Configurations
+    - priceRate: Double
+    - src: Location
+    - dst: Location
+    {field} ...
+    +Business(src: Location, dst: Location)
+    +clone(): IRidePrototype
+    {method} ...
+}
+
+class Configurations {
+    - someCongiguration
+    {field} ...
+    {method} ...
+}
+
+' --- Note ---
+
+note top of MemoryFacility
+  The MemoryFacility (Registry) provides an easy way to access frequently-used history rides. 
+  It stores a set of previous rides that are ready to be copied. 
+end note
+
+note top of Client
+  Example: 
+  lastRide = MemoryFacility.getLastRide()
+end note
+
+note top of MemoryFacility
+  Example: 
+  def getLastRide():
+    return historyRides[historyRides.length - 1].clone()
+end note
+
+note top of IRidePrototype
+  The IRidePrototype interface declares the cloning methods. 
+  All concrete ride objects should implement the methods with their own context.
+end note
+
+note top of Economy
+  For instance, there are three possible concrete implementations
+  from IRidePrototype.
+end note
+
+
+' ---Relationship ---
+
+Client -right-> MemoryFacility
+MemoryFacility::historyRides -right-o IRidePrototype
+Economy .up.|> IRidePrototype
+Business .up.|> IRidePrototype
+Minibus .up.|> IRidePrototype
+
+Economy::configs o.down.> Configurations
+Business::configs o.down.> Configurations
+Minibus::configs o.down.> Configurations
+
+@enduml

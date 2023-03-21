@@ -1,0 +1,70 @@
+@startuml Prototype Pattern
+
+skin rose
+'--- Declaration---
+title Scenario 3: Decorator Pattern
+'skinparam classAttributeIconSize 0
+
+class Client {
+}
+
+interface IRideService {
+    + pickUpClient(src:Location): void
+    + goToDestination(dst:Location): void
+    {method} ...
+}
+
+class BasicRideService {
+    + pickUpClient(src:Location): void
+    + goToDestination(dst:Location): void
+    {field} ...
+    {method} ...
+}
+
+Abstract class RideServiceDecorator {
+    - wrapee: IRideService
+    {field} ...
+    + pickUpClient(src:Location): void
+    + goToDestination(dst:Location): void
+    {method} ...
+}
+
+class SanFranRideDecorator {
+    + sanFranTourService(): void
+    {method} ...
+}
+
+class LosAngelesRideDecorator {
+    + LATourService(): void
+    {method} ...
+}
+
+' --- Note ---
+
+note top of IRideService
+    Declare the common interface for both 
+    decorator and wrapped rideService objects.
+end note
+
+note top of RideServiceDecorator
+    This class is the Base Decorator class 
+    has a field for referencing a wrapped rideService object. 
+    The field’s type should be declared as the component interface
+end note
+
+note left of LosAngelesRideDecorator
+    Concrete Decorators such as LosAngelesRideDecorator
+    and SanFranRideDecorator define location-specific services
+    that can be added to basic ride service.
+end note
+
+
+' ---Relationship ---
+
+Client -right-> IRideService
+BasicRideService .up.|> IRideService
+RideServiceDecorator .up.|> IRideService
+SanFranRideDecorator -up-|> RideServiceDecorator
+LosAngelesRideDecorator -up-|> RideServiceDecorator
+
+@enduml

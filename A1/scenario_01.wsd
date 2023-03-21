@@ -1,0 +1,63 @@
+@startuml Proxy Pattern
+
+skin rose
+'--- Declaration---
+title Scenario 1: Proxy
+'skinparam classAttributeIconSize 0
+
+class Client {
+}
+
+interface IPayment {
+    {field} ...
+    +pay(): bool
+}
+
+class PayPalService {
+    {field} ...
+    +pay(): bool
+    {method} ...
+}
+
+class PaymentProxy {
+    + paymentService: PayPalService
+    {field} ...
+    -validateRequest():bool
+    -formatData():Info
+    +pay(): bool
+    {method} ...
+}
+
+' --- Note ---
+
+note left of PaymentProxy::paymentService
+  Refer to Third-Party PayPalService
+  via IPayment interface.
+end note
+
+note top of IPayment
+  This is the common interface for 
+  both real service and proxy.
+  This way we can pass a proxy into 
+  anywhere that expects a service object.
+end note
+
+note right of PayPalService
+  This is Third-Party Service package from PayPal.
+end note
+
+note left of PaymentProxy::formatData
+  Preprocessing operations can be executed
+  before the called the real service.
+  (validateRequest, formatData, etc. are examples 
+  for possible preprocessing operations)
+end note
+
+' ---Relationship ---
+
+Client -right-> IPayment
+PayPalService .left.|> IPayment
+PaymentProxy .up.|> IPayment
+PaymentProxy::paymentService o-right-> PayPalService
+
+@enduml
